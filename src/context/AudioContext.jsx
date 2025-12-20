@@ -78,7 +78,7 @@ export function AudioProvider({ children }) {
         loadingRef.current.delete(id)
 
         if (volume > 0) {
-          audioEngine.playSound(id, buffer)
+          await audioEngine.playSound(id, buffer)
           audioEngine.setVolume(id, volume / 100)
         }
       } catch (error) {
@@ -91,7 +91,7 @@ export function AudioProvider({ children }) {
       if (volume > 0 && !audioEngine.isPlaying(id)) {
         // Start playing
         const buffer = await audioEngine.loadSound(id, soundConfig.src)
-        audioEngine.playSound(id, buffer)
+        await audioEngine.playSound(id, buffer)
         audioEngine.setVolume(id, volume / 100)
       } else if (volume === 0 && audioEngine.isPlaying(id)) {
         // Stop playing

@@ -49,8 +49,9 @@ export function useAudioEngine() {
 
   /**
    * Initialize AudioContext (must be called after user interaction)
+   * Returns a promise that resolves when context is ready
    */
-  const initializeContext = useCallback(() => {
+  const initializeContext = useCallback(async () => {
     if (!audioContextRef.current) {
       audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)()
       masterGainRef.current = audioContextRef.current.createGain()
@@ -59,9 +60,9 @@ export function useAudioEngine() {
       const effectiveVolume = isMutedRef.current ? 0 : masterVolumeRef.current
       masterGainRef.current.gain.value = effectiveVolume
     }
-    // Resume if suspended (autoplay policy)
+    // Resume if suspended (autoplay policy or browser auto-suspend after inactivity)
     if (audioContextRef.current.state === 'suspended') {
-      audioContextRef.current.resume()
+      await audioContextRef.current.resume()
     }
     return audioContextRef.current
   }, [])
@@ -76,7 +77,7 @@ export function useAudioEngine() {
       return buffersRef.current.get(id)
     }
 
-    initializeContext()
+    await initializeContext()
 
     try {
       const response = await fetch(url)
@@ -97,8 +98,8 @@ export function useAudioEngine() {
   /**
    * Start playing a sound with seamless loop
    */
-  const playSound = useCallback((id, buffer) => {
-    initializeContext()
+  const playSound = useCallback(async (id, buffer) => {
+    await initializeContext()
 
     // Stop existing instance if any
     const existing = soundsRef.current.get(id)
