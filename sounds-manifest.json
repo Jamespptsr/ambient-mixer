@@ -1,0 +1,75 @@
+{
+  "sounds": [
+    {
+      "id": "rain",
+      "name": "Rain",
+      "filename": "rain.mp3",
+      "source": "User provided",
+      "license": "See source"
+    },
+    {
+      "id": "thunder",
+      "name": "Thunder",
+      "filename": "thunder.mp3",
+      "source": "User provided",
+      "license": "See source"
+    },
+    {
+      "id": "ocean",
+      "name": "Ocean Waves",
+      "filename": "ocean.mp3",
+      "source": "User provided",
+      "license": "See source"
+    },
+    {
+      "id": "wind",
+      "name": "Wind",
+      "filename": "wind.mp3",
+      "source": "User provided",
+      "license": "See source"
+    },
+    {
+      "id": "fire",
+      "name": "Fire",
+      "filename": "fire.mp3",
+      "source": "User provided",
+      "license": "See source"
+    },
+    {
+      "id": "birds",
+      "name": "Birds",
+      "filename": "birds.mp3",
+      "source": "User provided",
+      "license": "See source"
+    },
+    {
+      "id": "crickets",
+      "name": "Crickets",
+      "filename": "crickets.mp3",
+      "source": "User provided",
+      "license": "See source"
+    },
+    {
+      "id": "coffeeshop",
+      "name": "Coffee Shop",
+      "filename": "coffeeshop.mp3",
+      "source": "User provided",
+      "license": "See source"
+    },
+    {
+      "id": "forest",
+      "name": "Forest",
+      "filename": "forest.mp3",
+      "source": "User provided",
+      "license": "See source"
+    },
+    {
+      "id": "stream",
+      "name": "Stream",
+      "filename": "stream.mp3",
+      "source": "User provided",
+      "license": "See source"
+    }
+  ],
+  "generatedAt": "2025-12-19T18:12:05.325Z"
+}
