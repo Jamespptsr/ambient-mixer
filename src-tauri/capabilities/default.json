@@ -8,7 +8,6 @@
   "permissions": [
     "core:default",
     "window-state:allow-restore-state",
-    "window-state:allow-save-window-state",
-    "background-audio:default"
+    "window-state:allow-save-window-state"
   ]
 }

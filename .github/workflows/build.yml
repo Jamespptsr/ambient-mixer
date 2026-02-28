@@ -4,7 +4,7 @@ on:
   push:
     tags:
       - 'v*'
-  workflow_dispatch:  # 允许手动触发
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -12,6 +12,7 @@ permissions:
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
         include:
           - platform: windows-latest
@@ -41,7 +42,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tagName: ${{ github.ref_name }}
-          releaseName: 'Ambient Mixer ${{ github.ref_name }}'
+          releaseName: 'Take It Easy ${{ github.ref_name }}'
           releaseBody: 'Download the installer for your platform.'
           releaseDraft: true
 
