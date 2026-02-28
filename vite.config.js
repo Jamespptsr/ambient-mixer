@@ -3,16 +3,18 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
+const isTauri = !!process.env.TAURI_ENV_PLATFORM
+
 export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
-    VitePWA({
+    !isTauri && VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png'],
       manifest: {
-        name: 'Ambient Mixer',
-        short_name: 'Ambient',
+        name: '\u7720\u82B1\u68E0',
+        short_name: '\u7720\u82B1\u68E0',
         description: 'Mix ambient sounds for relaxation and focus',
         theme_color: '#0f172a',
         background_color: '#020617',
@@ -48,5 +50,5 @@ export default defineConfig({
         ]
       }
     })
-  ]
+  ].filter(Boolean)
 })

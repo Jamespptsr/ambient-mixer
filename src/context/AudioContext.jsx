@@ -2,6 +2,7 @@ import { createContext, useContext, useReducer, useRef, useEffect, useCallback }
 import { SOUNDS } from '../data/sounds'
 import { useAudioEngine } from '../hooks/useAudioEngine'
 import { useMeander } from '../hooks/useMeander'
+import { useBackgroundAudio } from '../hooks/useBackgroundAudio'
 
 const AudioStateContext = createContext(null)
 
@@ -62,7 +63,10 @@ function audioReducer(state, action) {
 export function AudioProvider({ children }) {
   const [state, dispatch] = useReducer(audioReducer, initialState)
   const audioEngine = useAudioEngine()
+  useBackgroundAudio(state.sounds)
   const loadingRef = useRef(new Set())
+  const stateRef = useRef(state)
+  stateRef.current = state
 
   // Handle volume changes for individual sounds
   const handleVolumeChange = useCallback(async (id, volume) => {
@@ -135,14 +139,27 @@ export function AudioProvider({ children }) {
   }, [audioEngine])
 
   // Custom dispatch that handles volume changes
+  // For TOGGLE_MUTE and TOGGLE_PLAY, call initializeContext() directly here
+  // to ensure AudioContext.resume() runs in the user gesture context.
+  // Some browsers silently reject resume() called from useEffect (outside gesture).
   const enhancedDispatch = useCallback((action) => {
     if (action.type === 'SET_VOLUME') {
       handleVolumeChange(action.id, action.volume)
       updateBaseVolume(action.id, action.volume)
+    } else if (action.type === 'TOGGLE_MUTE') {
+      if (stateRef.current.isMuted) {
+        audioEngine.initializeContext()
+      }
+      dispatch(action)
+    } else if (action.type === 'TOGGLE_PLAY') {
+      if (!stateRef.current.isPlaying) {
+        audioEngine.initializeContext()
+      }
+      dispatch(action)
     } else {
       dispatch(action)
     }
-  }, [handleVolumeChange, updateBaseVolume])
+  }, [handleVolumeChange, updateBaseVolume, audioEngine])
 
   return (
     <AudioStateContext.Provider value={{

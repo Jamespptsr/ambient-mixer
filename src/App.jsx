@@ -2,9 +2,11 @@ import { useEffect, useCallback } from 'react'
 import { AudioProvider, useAudioState } from './context/AudioContext'
 import SoundGrid from './components/SoundGrid'
 import MasterControls from './components/MasterControls'
+import useTheme from './hooks/useTheme'
 
 function AppContent() {
   const { state, dispatch, audioEngine } = useAudioState()
+  const { theme, setTheme, toggleTheme } = useTheme()
 
   const activeCount = Object.values(state.sounds).filter(s => s.isPlaying).length
 
@@ -32,10 +34,10 @@ function AppContent() {
   }, [dispatch])
 
   return (
-    <div className="min-h-screen bg-slate-950 pb-28">
-      <header className="p-6 text-center">
-        <h1 className="text-2xl font-bold text-white">Ambient Mixer</h1>
-        <p className="text-slate-400 text-sm mt-1">Mix your perfect soundscape</p>
+    <div className="min-h-screen pb-4 sm:pb-6" style={{ backgroundColor: 'var(--bg-main)' }}>
+      <header className="px-4 py-3 sm:p-6 text-center">
+        <h1 className="text-lg sm:text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Take It Easy</h1>
+        <p className="text-xs sm:text-sm mt-0.5 sm:mt-1" style={{ color: 'var(--text-tertiary)' }}>We are all imperfectly beautiful.</p>
       </header>
 
       <SoundGrid
@@ -52,10 +54,13 @@ function AppContent() {
         masterVolume={state.masterVolume}
         activeCount={activeCount}
         meanderActive={state.meanderActive}
+        theme={theme}
         onPlayPause={() => dispatch({ type: 'TOGGLE_PLAY' })}
         onMute={() => dispatch({ type: 'TOGGLE_MUTE' })}
         onMasterVolume={(vol) => dispatch({ type: 'SET_MASTER_VOLUME', volume: vol })}
         onMeanderToggle={() => dispatch({ type: 'TOGGLE_MEANDER' })}
+        onThemeChange={setTheme}
+        onThemeToggle={toggleTheme}
       />
     </div>
   )

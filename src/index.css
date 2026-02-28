@@ -1,5 +1,143 @@
 @import "tailwindcss";
 
+/* Theme variables */
+:root,
+[data-theme="sakura"] {
+  --bg-main: #1a0a12;
+  --bg-card-light: #2d1520;
+  --bg-card-dark: #1e0e18;
+  --border-track: #3d1f30;
+  --border-hover: #4d2a40;
+  --accent: #f472b6;
+  --text-primary: #fdf2f8;
+  --text-secondary: #c4859a;
+  --text-tertiary: #a05070;
+  --text-quaternary: #7a4060;
+  --slider-track: rgba(61,31,48,0.6);
+  --thumb-border: rgba(26,10,18,0.8);
+  --thumb-glow: rgba(244,114,182,0.5);
+  --thumb-glow-hover: rgba(244,114,182,0.7);
+  --card-glow-gradient: rgba(244,114,182,0.3);
+}
+
+[data-theme="deep-blue"] {
+  --bg-main: #080c18;
+  --bg-card-light: #121e30;
+  --bg-card-dark: #0c1420;
+  --border-track: #1e3050;
+  --border-hover: #2a4060;
+  --accent: #60a5fa;
+  --text-primary: #e0eaff;
+  --text-secondary: #6888a8;
+  --text-tertiary: #4a6080;
+  --text-quaternary: #3a5070;
+  --slider-track: rgba(30,48,80,0.6);
+  --thumb-border: rgba(8,12,24,0.8);
+  --thumb-glow: rgba(96,165,250,0.5);
+  --thumb-glow-hover: rgba(96,165,250,0.7);
+  --card-glow-gradient: rgba(96,165,250,0.3);
+}
+
+[data-theme="forest"] {
+  --bg-main: #0a1a0e;
+  --bg-card-light: #152d1a;
+  --bg-card-dark: #0e1f12;
+  --border-track: #1f3d25;
+  --border-hover: #2a4d30;
+  --accent: #4ade80;
+  --text-primary: #f0fdf4;
+  --text-secondary: #6da882;
+  --text-tertiary: #4a8060;
+  --text-quaternary: #3a6050;
+  --slider-track: rgba(31,61,37,0.6);
+  --thumb-border: rgba(10,26,14,0.8);
+  --thumb-glow: rgba(74,222,128,0.5);
+  --thumb-glow-hover: rgba(74,222,128,0.7);
+  --card-glow-gradient: rgba(74,222,128,0.3);
+}
+
+[data-theme="amber"] {
+  --bg-main: #1a140a;
+  --bg-card-light: #2d2215;
+  --bg-card-dark: #1e180e;
+  --border-track: #3d3020;
+  --border-hover: #4d3d2a;
+  --accent: #fbbf24;
+  --text-primary: #fefce8;
+  --text-secondary: #b89a60;
+  --text-tertiary: #907840;
+  --text-quaternary: #706030;
+  --slider-track: rgba(61,48,32,0.6);
+  --thumb-border: rgba(26,20,10,0.8);
+  --thumb-glow: rgba(251,191,36,0.5);
+  --thumb-glow-hover: rgba(251,191,36,0.7);
+  --card-glow-gradient: rgba(251,191,36,0.3);
+}
+
+[data-theme="lavender"] {
+  --bg-main: #120a1a;
+  --bg-card-light: #221530;
+  --bg-card-dark: #180e22;
+  --border-track: #302040;
+  --border-hover: #402a50;
+  --accent: #a78bfa;
+  --text-primary: #f5f3ff;
+  --text-secondary: #8a70b0;
+  --text-tertiary: #6a5090;
+  --text-quaternary: #5a4070;
+  --slider-track: rgba(48,32,64,0.6);
+  --thumb-border: rgba(18,10,26,0.8);
+  --thumb-glow: rgba(167,139,250,0.5);
+  --thumb-glow-hover: rgba(167,139,250,0.7);
+  --card-glow-gradient: rgba(167,139,250,0.3);
+}
+
+[data-theme="slate"] {
+  --bg-main: #101214;
+  --bg-card-light: #1e2228;
+  --bg-card-dark: #14181c;
+  --border-track: #2a3038;
+  --border-hover: #363e48;
+  --accent: #94a3b8;
+  --text-primary: #f1f5f9;
+  --text-secondary: #708090;
+  --text-tertiary: #546474;
+  --text-quaternary: #425464;
+  --slider-track: rgba(42,48,56,0.6);
+  --thumb-border: rgba(16,18,20,0.8);
+  --thumb-glow: rgba(148,163,184,0.5);
+  --thumb-glow-hover: rgba(148,163,184,0.7);
+  --card-glow-gradient: rgba(148,163,184,0.3);
+}
+
+/* Card entrance animation */
+@keyframes card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-card-enter {
+  animation: card-enter 0.4s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+/* Stagger delay for cards */
+.stagger-1 { animation-delay: 0.05s; }
+.stagger-2 { animation-delay: 0.1s; }
+.stagger-3 { animation-delay: 0.15s; }
+.stagger-4 { animation-delay: 0.2s; }
+.stagger-5 { animation-delay: 0.25s; }
+.stagger-6 { animation-delay: 0.3s; }
+.stagger-7 { animation-delay: 0.35s; }
+.stagger-8 { animation-delay: 0.4s; }
+.stagger-9 { animation-delay: 0.45s; }
+.stagger-10 { animation-delay: 0.5s; }
+
 /* Custom slider thumb styling */
 input[type="range"].slider-thumb {
   -webkit-appearance: none;
@@ -16,20 +154,28 @@ input[type="range"].slider-thumb::-webkit-slider-runnable-track {
 input[type="range"].slider-thumb::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  background: #22d3ee;
+  background: var(--accent);
   cursor: pointer;
-  border: 2px solid #0f172a;
-  box-shadow: 0 0 10px rgba(34, 211, 238, 0.5);
-  margin-top: -5px;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  border: 2px solid var(--thumb-border);
+  box-shadow:
+    0 0 12px var(--thumb-glow),
+    0 2px 4px rgba(0, 0, 0, 0.3);
+  margin-top: -6px;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
 }
 
 input[type="range"].slider-thumb::-webkit-slider-thumb:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 15px rgba(34, 211, 238, 0.7);
+  transform: scale(1.15);
+  box-shadow:
+    0 0 20px var(--thumb-glow-hover),
+    0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+input[type="range"].slider-thumb:active::-webkit-slider-thumb {
+  transform: scale(1.05);
 }
 
 input[type="range"].slider-thumb::-moz-range-track {
@@ -38,40 +184,95 @@ input[type="range"].slider-thumb::-moz-range-track {
 }
 
 input[type="range"].slider-thumb::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  background: #22d3ee;
+  background: var(--accent);
   cursor: pointer;
-  border: 2px solid #0f172a;
-  box-shadow: 0 0 10px rgba(34, 211, 238, 0.5);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  border: 2px solid var(--thumb-border);
+  box-shadow:
+    0 0 12px var(--thumb-glow),
+    0 2px 4px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
 }
 
 input[type="range"].slider-thumb::-moz-range-thumb:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 15px rgba(34, 211, 238, 0.7);
+  transform: scale(1.15);
+  box-shadow:
+    0 0 20px var(--thumb-glow-hover),
+    0 4px 8px rgba(0, 0, 0, 0.4);
 }
 
-/* Meander button pulsing animation */
+/* Meander button pulsing animation - enhanced */
 @keyframes meander-pulse {
   0%, 100% {
-    opacity: 0.3;
+    opacity: 0.4;
     transform: scale(1);
   }
   50% {
     opacity: 0.1;
-    transform: scale(1.5);
+    transform: scale(1.6);
   }
 }
 
 .animate-meander-pulse {
-  animation: meander-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  animation: meander-pulse 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 /* Smooth transitions for interactive elements */
 button, input {
   transition-property: color, background-color, border-color, box-shadow, transform;
-  transition-duration: 150ms;
-  transition-timing-function: ease;
+  transition-duration: 200ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Button hover scale effect */
+button:active {
+  transform: scale(0.97);
+}
+
+/* Safe area for notched devices */
+.safe-bottom {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+
+/* Glow effect for playing cards */
+.card-glow {
+  position: relative;
+}
+
+.card-glow::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, var(--card-glow-gradient) 0%, transparent 50%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Touch-friendly slider for mobile - slightly smaller to fit compact cards */
+@media (max-width: 640px) {
+  input[type="range"].slider-thumb::-webkit-slider-runnable-track {
+    height: 6px;
+  }
+
+  input[type="range"].slider-thumb::-webkit-slider-thumb {
+    width: 20px;
+    height: 20px;
+    margin-top: -7px;
+  }
+
+  input[type="range"].slider-thumb::-moz-range-track {
+    height: 6px;
+  }
+
+  input[type="range"].slider-thumb::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+  }
 }

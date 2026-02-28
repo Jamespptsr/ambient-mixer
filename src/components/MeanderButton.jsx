@@ -5,16 +5,21 @@ export default function MeanderButton({ active, onClick }) {
     <button
       onClick={onClick}
       title="Meander: Random volume fluctuations"
-      className={`
-        relative p-3 rounded-lg transition-all duration-200
-        ${active
-          ? 'bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30'
-          : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-300'}
-      `}
+      className="relative p-2.5 sm:p-3 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"
+      style={active ? {
+        backgroundColor: `color-mix(in srgb, var(--accent) 20%, transparent)`,
+        color: 'var(--accent)',
+      } : {
+        backgroundColor: 'var(--bg-card-light)',
+        color: 'var(--text-tertiary)',
+      }}
     >
       {/* Pulsing ring when active */}
       {active && (
-        <span className="absolute inset-0 rounded-lg bg-cyan-500/30 animate-meander-pulse" />
+        <span
+          className="absolute inset-0 rounded-xl animate-meander-pulse"
+          style={{ backgroundColor: `color-mix(in srgb, var(--accent) 30%, transparent)` }}
+        />
       )}
       <Shuffle size={20} className="relative z-10" />
     </button>

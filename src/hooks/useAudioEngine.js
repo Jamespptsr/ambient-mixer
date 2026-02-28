@@ -60,8 +60,8 @@ export function useAudioEngine() {
       const effectiveVolume = isMutedRef.current ? 0 : masterVolumeRef.current
       masterGainRef.current.gain.value = effectiveVolume
     }
-    // Resume if suspended (autoplay policy or browser auto-suspend after inactivity)
-    if (audioContextRef.current.state === 'suspended') {
+    // Resume if not running (handles 'suspended', 'interrupted', and other non-running states)
+    if (audioContextRef.current.state !== 'running') {
       await audioContextRef.current.resume()
     }
     return audioContextRef.current
@@ -196,9 +196,15 @@ export function useAudioEngine() {
 
   /**
    * Mute/unmute master output
+   * When unmuting (transitioning from muted to unmuted), resumes suspended AudioContext
    */
-  const setMuted = useCallback((muted) => {
+  const setMuted = useCallback(async (muted) => {
+    const wasMuted = isMutedRef.current
     isMutedRef.current = muted
+    // Only resume context when transitioning from muted to unmuted (not on initial mount)
+    if (wasMuted && !muted) {
+      await initializeContext()
+    }
     if (masterGainRef.current && audioContextRef.current) {
       const now = audioContextRef.current.currentTime
       const targetVolume = muted ? 0 : masterVolumeRef.current
@@ -206,20 +212,21 @@ export function useAudioEngine() {
       masterGainRef.current.gain.setValueAtTime(masterGainRef.current.gain.value, now)
       masterGainRef.current.gain.linearRampToValueAtTime(targetVolume, now + 0.1)
     }
-  }, [])
+  }, [initializeContext])
 
   /**
    * Pause/resume all sounds (suspend AudioContext)
    */
-  const setPaused = useCallback((paused) => {
-    if (audioContextRef.current) {
-      if (paused) {
+  const setPaused = useCallback(async (paused) => {
+    if (paused) {
+      if (audioContextRef.current) {
         audioContextRef.current.suspend()
-      } else {
-        audioContextRef.current.resume()
       }
+    } else if (audioContextRef.current) {
+      // Only resume if context already exists (don't create one without user gesture)
+      await initializeContext()
     }
-  }, [])
+  }, [initializeContext])
 
   /**
    * Check if a sound is currently playing

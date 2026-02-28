@@ -1,57 +1,71 @@
 import { memo } from 'react'
 import VolumeSlider from './VolumeSlider'
 
-const SoundCard = memo(function SoundCard({ sound, volume, isPlaying, onVolumeChange }) {
+const SoundCard = memo(function SoundCard({ sound, volume, isPlaying, onVolumeChange, index = 0 }) {
   const IconComponent = sound.icon
 
   return (
     <div
       className={`
-        relative bg-slate-800 rounded-xl p-4 border
+        relative rounded-xl sm:rounded-2xl p-2 sm:p-5 border
         transition-all duration-300 ease-out
+        animate-card-enter stagger-${Math.min(index + 1, 10)}
         ${isPlaying
-          ? 'border-cyan-500/40 shadow-lg'
-          : 'border-slate-700 hover:border-slate-600'}
+          ? 'shadow-xl card-glow'
+          : 'hover:shadow-lg'}
       `}
       style={{
-        boxShadow: isPlaying ? `0 0 30px -5px ${sound.color}30` : undefined
+        background: `linear-gradient(to bottom right, var(--bg-card-light), var(--bg-card-dark))`,
+        borderColor: isPlaying
+          ? `color-mix(in srgb, var(--accent) 50%, transparent)`
+          : `color-mix(in srgb, var(--border-track) 50%, transparent)`,
+        boxShadow: isPlaying
+          ? `0 0 40px -10px ${sound.color}40, 0 20px 40px -20px rgba(0,0,0,0.5)`
+          : undefined,
+        '--hover-border': 'var(--border-hover)',
       }}
+      onMouseEnter={(e) => { if (!isPlaying) e.currentTarget.style.borderColor = 'var(--border-hover)' }}
+      onMouseLeave={(e) => { if (!isPlaying) e.currentTarget.style.borderColor = `color-mix(in srgb, var(--border-track) 50%, transparent)` }}
     >
       {/* Background glow effect when playing */}
       {isPlaying && (
         <div
-          className="absolute inset-0 rounded-xl opacity-10 blur-xl -z-10 transition-opacity duration-500"
+          className="absolute inset-0 rounded-xl sm:rounded-2xl opacity-15 blur-2xl -z-10 transition-opacity duration-500"
           style={{ backgroundColor: sound.color }}
         />
       )}
 
-      <div className="flex flex-col items-center gap-3">
-        {/* Icon */}
+      <div className="flex flex-col items-center gap-1 sm:gap-4">
+        {/* Icon with enhanced styling */}
         <div
-          className={`
-            p-3 rounded-full transition-all duration-300
-            ${isPlaying
-              ? 'bg-slate-700/50'
-              : 'bg-slate-700/30'}
-          `}
+          className="p-1.5 sm:p-4 rounded-full transition-all duration-300"
+          style={{
+            backgroundColor: isPlaying
+              ? `color-mix(in srgb, var(--border-track) 60%, transparent)`
+              : `color-mix(in srgb, var(--border-track) 30%, transparent)`,
+            boxShadow: isPlaying ? `0 0 20px ${sound.color}30 inset` : undefined
+          }}
         >
           <IconComponent
-            size={28}
-            className="transition-colors duration-300"
-            style={{ color: isPlaying ? sound.color : '#94A3B8' }}
+            size={20}
+            className="transition-all duration-300 sm:w-8 sm:h-8"
+            style={{
+              color: isPlaying ? sound.color : 'var(--text-tertiary)',
+              filter: isPlaying ? `drop-shadow(0 0 8px ${sound.color}60)` : undefined
+            }}
           />
         </div>
 
-        {/* Name */}
-        <span className={`
-          text-sm font-medium transition-colors duration-300
-          ${isPlaying ? 'text-white' : 'text-slate-300'}
-        `}>
+        {/* Name with better typography */}
+        <span
+          className="text-xs sm:text-base font-medium transition-colors duration-300 text-center leading-tight"
+          style={{ color: isPlaying ? 'var(--text-primary)' : 'var(--text-secondary)' }}
+        >
           {sound.name}
         </span>
 
-        {/* Volume Slider */}
-        <div className="w-full px-1">
+        {/* Volume Slider with larger touch area */}
+        <div className="w-full px-0.5 sm:px-1 py-0 sm:py-1">
           <VolumeSlider
             value={volume}
             onChange={onVolumeChange}
@@ -59,8 +73,8 @@ const SoundCard = memo(function SoundCard({ sound, volume, isPlaying, onVolumeCh
           />
         </div>
 
-        {/* Volume percentage */}
-        <span className="text-xs text-slate-500 tabular-nums">
+        {/* Volume percentage with min-width to prevent layout shift */}
+        <span className="text-[10px] sm:text-sm tabular-nums min-w-[2.5rem] text-center" style={{ color: 'var(--text-quaternary)' }}>
           {volume}%
         </span>
       </div>

@@ -1,6 +1,6 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "Ambient Mixer",
+  "productName": "Take It Easy",
   "version": "0.2.0",
   "identifier": "com.softmurmur.ambient-mixer",
   "build": {
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "Ambient Mixer",
+        "title": "Take It Easy",
         "width": 1200,
         "height": 800,
         "minWidth": 800,

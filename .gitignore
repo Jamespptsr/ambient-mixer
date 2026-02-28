@@ -30,6 +30,12 @@ prd.md
 # Audio backups (originals before compression)
 public/assets/sounds/backup/
 
+# Temporary / build artifacts
+redl/
+softmurmur-release.apk
+src-tauri/gen/
+src-tauri/tauri-plugin-background-audio/
+
 # Logs
 *.log
 npm-debug.log*

@@ -10,7 +10,9 @@
     "download-sounds": "node scripts/download-sounds.js",
     "tauri": "tauri",
     "tauri:dev": "tauri dev",
-    "tauri:build": "tauri build"
+    "tauri:build": "tauri build",
+    "tauri:android:dev": "tauri android dev",
+    "tauri:android:build": "tauri android build"
   },
   "dependencies": {
     "@tauri-apps/plugin-window-state": "^2.4.1",

@@ -8,14 +8,15 @@ export default function SoundGrid({ soundStates, onVolumeChange }) {
   }, [onVolumeChange])
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 px-4 max-w-6xl mx-auto">
-      {SOUNDS.map(sound => (
+    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-1.5 sm:gap-4 px-2 sm:px-4 max-w-6xl mx-auto">
+      {SOUNDS.map((sound, index) => (
         <SoundCard
           key={sound.id}
           sound={sound}
           volume={soundStates[sound.id]?.volume || 0}
           isPlaying={soundStates[sound.id]?.isPlaying || false}
           onVolumeChange={handleVolumeChange(sound.id)}
+          index={index}
         />
       ))}
     </div>
