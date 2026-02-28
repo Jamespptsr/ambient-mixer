@@ -3,12 +3,25 @@ import { AudioProvider, useAudioState } from './context/AudioContext'
 import SoundGrid from './components/SoundGrid'
 import MasterControls from './components/MasterControls'
 import useTheme from './hooks/useTheme'
+import { useSleepTimer } from './hooks/useSleepTimer'
 
 function AppContent() {
   const { state, dispatch, audioEngine } = useAudioState()
   const { theme, setTheme, toggleTheme } = useTheme()
 
   const activeCount = Object.values(state.sounds).filter(s => s.isPlaying).length
+
+  // Sleep timer
+  const { timerRemaining, isActive: timerActive, startTimer, cancelTimer } = useSleepTimer({
+    onFadeUpdate: (volume) => dispatch({ type: 'SET_MASTER_VOLUME', volume }),
+    onTimerEnd: () => {
+      if (state.isPlaying) dispatch({ type: 'TOGGLE_PLAY' })
+    },
+  })
+
+  const handleTimerStart = useCallback((minutes) => {
+    startTimer(minutes, state.masterVolume)
+  }, [startTimer, state.masterVolume])
 
   const handleVolumeChange = useCallback((id, volume) => {
     dispatch({ type: 'SET_VOLUME', id, volume })
@@ -55,10 +68,14 @@ function AppContent() {
         activeCount={activeCount}
         meanderActive={state.meanderActive}
         theme={theme}
+        timerActive={timerActive}
+        timerRemaining={timerRemaining}
         onPlayPause={() => dispatch({ type: 'TOGGLE_PLAY' })}
         onMute={() => dispatch({ type: 'TOGGLE_MUTE' })}
         onMasterVolume={(vol) => dispatch({ type: 'SET_MASTER_VOLUME', volume: vol })}
         onMeanderToggle={() => dispatch({ type: 'TOGGLE_MEANDER' })}
+        onTimerStart={handleTimerStart}
+        onTimerCancel={cancelTimer}
         onThemeChange={setTheme}
         onThemeToggle={toggleTheme}
       />

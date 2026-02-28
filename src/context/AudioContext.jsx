@@ -3,20 +3,43 @@ import { SOUNDS } from '../data/sounds'
 import { useAudioEngine } from '../hooks/useAudioEngine'
 import { useMeander } from '../hooks/useMeander'
 import { useBackgroundAudio } from '../hooks/useBackgroundAudio'
+import { loadPreferences, savePreferences } from '../hooks/usePreferences'
 
 const AudioStateContext = createContext(null)
 
-// Initial state
-const initialState = {
-  sounds: SOUNDS.reduce((acc, sound) => ({
-    ...acc,
-    [sound.id]: { volume: 0, isPlaying: false, isLoaded: false }
-  }), {}),
-  masterVolume: 80,
-  isMuted: false,
-  isPlaying: true,
-  meanderActive: false
+// Build initial state, merging saved preferences
+function buildInitialState() {
+  const defaults = {
+    sounds: SOUNDS.reduce((acc, sound) => ({
+      ...acc,
+      [sound.id]: { volume: 0, isPlaying: false, isLoaded: false }
+    }), {}),
+    masterVolume: 80,
+    isMuted: false,
+    isPlaying: false,
+    meanderActive: false
+  }
+
+  const prefs = loadPreferences()
+  if (!prefs) return defaults
+
+  // Restore saved volumes but keep isPlaying false (user must press Play)
+  const sounds = { ...defaults.sounds }
+  for (const [id, volume] of Object.entries(prefs.soundVolumes)) {
+    if (sounds[id]) {
+      sounds[id] = { ...sounds[id], volume, isPlaying: false }
+    }
+  }
+
+  return {
+    ...defaults,
+    sounds,
+    masterVolume: prefs.masterVolume,
+    meanderActive: prefs.meanderActive,
+  }
 }
+
+const initialState = buildInitialState()
 
 // Reducer
 function audioReducer(state, action) {
@@ -130,6 +153,16 @@ export function AudioProvider({ children }) {
   useEffect(() => {
     audioEngine.setPaused(!state.isPlaying)
   }, [state.isPlaying, audioEngine])
+
+  // Save preferences on state changes (debounced)
+  const saveTimeoutRef = useRef(null)
+  useEffect(() => {
+    clearTimeout(saveTimeoutRef.current)
+    saveTimeoutRef.current = setTimeout(() => {
+      savePreferences(state)
+    }, 500)
+    return () => clearTimeout(saveTimeoutRef.current)
+  }, [state])
 
   // Cleanup on unmount
   useEffect(() => {

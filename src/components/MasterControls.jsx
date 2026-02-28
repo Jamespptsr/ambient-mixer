@@ -1,5 +1,6 @@
 import { Play, Pause, VolumeX, RotateCcw } from 'lucide-react'
 import MeanderButton from './MeanderButton'
+import SleepTimerButton from './SleepTimerButton'
 import VolumeSlider from './VolumeSlider'
 import { THEMES } from '../hooks/useTheme'
 
@@ -10,10 +11,14 @@ export default function MasterControls({
   activeCount,
   meanderActive,
   theme,
+  timerActive,
+  timerRemaining,
   onPlayPause,
   onMute,
   onMasterVolume,
   onMeanderToggle,
+  onTimerStart,
+  onTimerCancel,
   onThemeChange,
   onThemeToggle
 }) {
@@ -81,6 +86,13 @@ export default function MasterControls({
           </button>
 
           <MeanderButton active={meanderActive} onClick={onMeanderToggle} />
+
+          <SleepTimerButton
+            isActive={timerActive}
+            timerRemaining={timerRemaining}
+            onStart={onTimerStart}
+            onCancel={onTimerCancel}
+          />
         </div>
 
         {/* Theme color dots */}
