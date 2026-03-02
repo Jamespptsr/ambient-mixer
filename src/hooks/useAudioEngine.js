@@ -4,6 +4,9 @@ import { useRef, useCallback, useMemo } from 'react'
 // Each 30s mono 22kHz buffer ≈ 2.6MB decoded
 const MAX_CACHED_BUFFERS = 3
 
+// Watchdog interval: check AudioContext health every 30 seconds
+const WATCHDOG_INTERVAL_MS = 30000
+
 /**
  * Hook for managing Web Audio API audio playback with seamless looping
  */
@@ -16,6 +19,8 @@ export function useAudioEngine() {
   const stopTimeoutsRef = useRef(new Map()) // id -> timeout ID for stopSound fade-out
   const masterVolumeRef = useRef(1) // Store master volume separately
   const isMutedRef = useRef(false) // Store mute state separately
+  const userPausedRef = useRef(false) // Distinguish user-initiated pause from system suspension
+  const watchdogRef = useRef(null) // Interval ID for periodic AudioContext health check
 
   /**
    * Update LRU order and evict old buffers if needed
@@ -59,6 +64,15 @@ export function useAudioEngine() {
       // Apply stored master volume and mute state
       const effectiveVolume = isMutedRef.current ? 0 : masterVolumeRef.current
       masterGainRef.current.gain.value = effectiveVolume
+
+      // Auto-resume when system unexpectedly suspends AudioContext
+      // (e.g., Windows power management, audio device changes, browser resource management)
+      audioContextRef.current.onstatechange = () => {
+        const ctx = audioContextRef.current
+        if (ctx && ctx.state !== 'running' && !userPausedRef.current && !isMutedRef.current) {
+          ctx.resume().catch(() => {})
+        }
+      }
     }
     // Resume if not running (handles 'suspended', 'interrupted', and other non-running states)
     if (audioContextRef.current.state !== 'running') {
@@ -218,6 +232,7 @@ export function useAudioEngine() {
    * Pause/resume all sounds (suspend AudioContext)
    */
   const setPaused = useCallback(async (paused) => {
+    userPausedRef.current = paused
     if (paused) {
       if (audioContextRef.current) {
         audioContextRef.current.suspend()
@@ -236,9 +251,41 @@ export function useAudioEngine() {
   }, [])
 
   /**
+   * Start watchdog timer to periodically check AudioContext health.
+   * Backup mechanism in case onstatechange doesn't fire reliably.
+   */
+  const startWatchdog = useCallback(() => {
+    if (watchdogRef.current) return // Already running
+    watchdogRef.current = setInterval(() => {
+      if (audioContextRef.current &&
+          audioContextRef.current.state !== 'running' &&
+          !userPausedRef.current &&
+          !isMutedRef.current) {
+        audioContextRef.current.resume().catch(() => {})
+      }
+    }, WATCHDOG_INTERVAL_MS)
+  }, [])
+
+  /**
+   * Stop watchdog timer when no sounds are playing
+   */
+  const stopWatchdog = useCallback(() => {
+    if (watchdogRef.current) {
+      clearInterval(watchdogRef.current)
+      watchdogRef.current = null
+    }
+  }, [])
+
+  /**
    * Cleanup all audio resources
    */
   const cleanup = useCallback(() => {
+    // Stop watchdog
+    if (watchdogRef.current) {
+      clearInterval(watchdogRef.current)
+      watchdogRef.current = null
+    }
+
     // Cancel all pending stop timeouts
     stopTimeoutsRef.current.forEach(clearTimeout)
     stopTimeoutsRef.current.clear()
@@ -273,6 +320,8 @@ export function useAudioEngine() {
     setMuted,
     setPaused,
     isPlaying,
+    startWatchdog,
+    stopWatchdog,
     cleanup
   }), [
     initializeContext,
@@ -285,6 +334,8 @@ export function useAudioEngine() {
     setMuted,
     setPaused,
     isPlaying,
+    startWatchdog,
+    stopWatchdog,
     cleanup
   ])
 }

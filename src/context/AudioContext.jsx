@@ -154,6 +154,16 @@ export function AudioProvider({ children }) {
     audioEngine.setPaused(!state.isPlaying)
   }, [state.isPlaying, audioEngine])
 
+  // Start/stop watchdog based on whether sounds are actively playing
+  useEffect(() => {
+    const hasActiveSounds = Object.values(state.sounds).some(s => s.isPlaying)
+    if (hasActiveSounds && state.isPlaying) {
+      audioEngine.startWatchdog()
+    } else {
+      audioEngine.stopWatchdog()
+    }
+  }, [state.sounds, state.isPlaying, audioEngine])
+
   // Save preferences on state changes (debounced)
   const saveTimeoutRef = useRef(null)
   useEffect(() => {
